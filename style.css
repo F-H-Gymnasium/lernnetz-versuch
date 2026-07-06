@@ -97,7 +97,7 @@ body {
 .header-main-line {
     padding: 15px 40px;
     display: flex;
-    justify-content: flex-end; /* Rechtsbündig wie Lernsax */
+    justify-content: flex-end;
     background: linear-gradient(to bottom, #ffffff, #f3f4f6);
     border-top: 4px solid #cbd5e1;
 }
@@ -199,6 +199,24 @@ body {
     border-radius: 4px 4px 0 0;
     position: relative;
     top: 1px;
+}
+
+/* Rollenspezifische Boxen */
+.admin-box {
+    background-color: #fde8e8;
+    border: 1px solid #f8b4b4;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    color: #9b1c1c;
+}
+.teacher-box {
+    background-color: #eafaf1;
+    border: 1px solid #2ecc71;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    color: #27ae60;
 }
 
 /* Übersichtstabelle (Original-Look) */
