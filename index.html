@@ -41,7 +41,7 @@
                     <span class="sachsen-logo">sachsen.de</span>
                 </div>
                 <div class="header-right">
-                    <span id="user-display-name" class="user-name">Finn Dany Roitsch</span>
+                    <span id="user-display-name" class="user-name">Lädt...</span>
                     <span class="header-links">Suche 🔍 | Menü ☰</span>
                 </div>
             </div>
@@ -56,12 +56,20 @@
 
         <nav class="blue-navbar">
             <div class="nav-left">
-                <span class="room-selector">▼ Raum wechseln</span>
+                <span id="roomBtn" class="room-selector">▼ Raum wechseln</span>
             </div>
             <div class="nav-right">
                 <span class="nav-icons">🖨️ 📑 ✉️ ✏️ 📖 📥 ⚙️ ❓</span>
             </div>
         </nav>
+
+        <div id="room-dropdown" class="room-overlay hidden">
+            <div class="dropdown-header">Finn Dany Roitsch</div>
+            <div class="dropdown-category">Schulen</div>
+            <div id="school-select-btn" class="dropdown-item">🏫 <span class="current-school-name">LernNetz Schule</span></div>
+            <div class="dropdown-category">Klassen</div>
+            <div class="dropdown-item-disabled">👥 Keine Räume geladen</div>
+        </div>
 
         <div class="sub-info-bar">
             <span id="user-path">Lädt Rolle...</span>
@@ -71,75 +79,93 @@
         <div class="dashboard-layout">
             
             <main class="main-content">
-                <div class="content-header">
-                    <h2>🏠 Start</h2>
-                    <div class="tabs">
-                        <span class="tab active">Status</span>
-                        <span class="tab">Pinnwand</span>
-                    </div>
-                </div>
-
-                <section id="admin-panel" class="role-section hidden">
-                    <div class="admin-box">
-                        <h4>🛠️ Admin-Bereich</h4>
-                        <p>Hier kannst du später neue Benutzer anlegen und Klassen verwalten.</p>
-                    </div>
-                </section>
-
-                <section id="teacher-panel" class="role-section hidden">
-                    <div class="teacher-box">
-                        <h4>📝 Lehrer-Funktionen</h4>
-                        <p>Hier kannst du Hausaufgaben aufgeben oder die Pinnwand bearbeiten.</p>
-                    </div>
-                </section>
-
-                <table class="info-table">
-                    <tr>
-                        <td class="label-col">E-Mail</td>
-                        <td class="value-col"><a href="#">0 ungelesene E-Mail(s)</a></td>
-                    </tr>
-                    <tr>
-                        <td class="label-col">Messenger</td>
-                        <td class="value-col"><a href="#">7 Mitglied(er) online</a></td>
-                    </tr>
-                    <tr>
-                        <td class="label-col">Kalender</td>
-                        <td class="value-col">
-                            <div>📅 Sommerferien (04.07.2026 - 14.08.2026)</div>
-                            <div>📅 Herbstferien (12.10.2026 - 24.10.2026)</div>
-                            <div>📅 Buß- und Bettag (18.11.2026)</div>
-                        </td>
-                    </tr>
-                </table>
-
-                <div class="section-headline">
-                    <h3>Klassen</h3>
-                    <span class="minimize-btn">—</span>
-                </div>
                 
-                <div class="classes-grid">
-                    <div class="class-card">
-                        <div class="class-card-image">👥👥👥</div>
-                        <div class="class-card-body">
-                            <a href="#">8rt Inf (2025/2026)</a>
-                            <p>Anke Kindermann 👤</p>
+                <div id="view-start" class="content-pane">
+                    <div class="content-header">
+                        <h2>🏠 Start</h2>
+                        <div class="tabs">
+                            <span class="tab active">Status</span>
+                            <span class="tab">Pinnwand</span>
                         </div>
                     </div>
-                    <div class="class-card">
-                        <div class="class-card-image">👥👥👥</div>
-                        <div class="class-card-body">
-                            <a href="#">8rt Physik (2025/2026)</a>
-                            <p>Markus Hotho 👤</p>
-                        </div>
+
+                    <table class="info-table">
+                        <tr>
+                            <td class="label-col">E-Mail</td>
+                            <td class="value-col"><a href="#">0 ungelesene E-Mail(s)</a></td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">Messenger</td>
+                            <td class="value-col"><a href="#">7 Mitglied(er) online</a></td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">Kalender</td>
+                            <td class="value-col">
+                                <div>📅 Sommerferien (04.07.2026 - 14.08.2026)</div>
+                                <div>📅 Herbstferien (12.10.2026 - 24.10.2026)</div>
+                                <div>📅 Buß- und Bettag (18.11.2026)</div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="section-headline">
+                        <h3>Klassen</h3>
+                        <span class="minimize-btn">—</span>
                     </div>
-                    <div class="class-card">
-                        <div class="class-card-image tiger-bg">🐯</div>
-                        <div class="class-card-body">
-                            <a href="#">8rt SPO (2025/2026)</a>
-                            <p>Ramona Tschüter 👤</p>
+                    
+                    <div class="classes-grid">
+                        <div class="class-card">
+                            <div class="class-card-image">👥</div>
+                            <div class="class-card-body">
+                                <a href="#">8 Ethik (2025/2026)</a>
+                                <p>Sybille Langer 👤</p>
+                            </div>
+                        </div>
+                        <div class="class-card">
+                            <div class="class-card-image">👥</div>
+                            <div class="class-card-body">
+                                <a href="#">8r Ru (2025/2026)</a>
+                                <p>Britt Kretschmar 👤</p>
+                            </div>
+                        </div>
+                        <div class="class-card">
+                            <div class="class-card-image">🐞</div>
+                            <div class="class-card-body">
+                                <a href="#">8rt (2025/2026)</a>
+                                <p>Heike Knüpfer 👤</p>
+                            </div>
+                        </div>
+                        <div class="class-card">
+                            <div class="class-card-image">🐯</div>
+                            <div class="class-card-body">
+                                <a href="#">8rt SPO (2025/2026)</a>
+                                <p>Ramona Tschüter 👤</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <div id="view-settings" class="content-pane hidden">
+                    <div class="content-header">
+                        <h2>⚙️ Grundeinstellungen</h2>
+                    </div>
+                    <div class="settings-form-box">
+                        <div class="form-group">
+                            <label for="settings-schoolname">Name der Schule:</label>
+                            <input type="text" id="settings-schoolname" placeholder="z.B. Christian-Weise-Gymnasium Zittau">
+                        </div>
+                        
+                        <div class="form-group toggle-group">
+                            <label for="settings-maintenance">🚨 Wartungsmodus aktivieren:</label>
+                            <input type="checkbox" id="settings-maintenance">
+                            <span class="toggle-desc">Wenn aktiv, können sich Schüler und Lehrer nicht mehr einloggen. Nur Admins erhalten Zutritt.</span>
+                        </div>
+
+                        <button id="saveSettingsBtn" class="btn-primary" style="width: auto; padding: 10px 20px;">Einstellungen speichern</button>
+                        <p id="settings-message" style="margin-top: 10px; font-weight: bold;"></p>
+                    </div>
+                </div>
+
             </main>
 
             <aside class="sidebar-tools">
@@ -153,12 +179,13 @@
                 </div>
                 
                 <ul class="tool-list">
-                    <li class="tool-item active">🏠 Start</li>
+                    <li id="menu-start" class="tool-item active">🏠 Start</li>
                     
                     <li class="category-title">Kommunizieren</li>
                     <li class="tool-item">✉️ E-Mail</li>
                     <li class="tool-item">👥 Adressbuch</li>
                     <li class="tool-item">💬 Messenger</li>
+                    <li class="tool-item">💬 Forum</li>
                     
                     <li class="category-title">Organisieren</li>
                     <li class="tool-item">📁 Dateien</li>
@@ -166,11 +193,10 @@
                     <li class="tool-item">✔️ Aufgaben</li>
                     <li class="tool-item">📑 Lesezeichen</li>
                     <li class="tool-item">🗓️ Stundenplan</li>
-                    <li class="tool-item">📝 Notizen</li>
+                    <li class="tool-item">📝 Formulare</li>
                     
-                    <li class="category-title">Lernen</li>
-                    <li class="tool-item">💻 Lernmodule</li>
-                    <li class="tool-item">📚 Mediensammlung</li>
+                    <li id="admin-menu-title" class="category-title hidden">Administration</li>
+                    <li id="menu-settings" class="tool-item hidden">⚙️ Grundeinstellungen</li>
                 </ul>
             </aside>
 
