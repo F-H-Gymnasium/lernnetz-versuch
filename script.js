@@ -24,6 +24,7 @@ const passwordInput = document.getElementById("password");
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const messageText = document.getElementById("message");
+const userDisplayName = document.getElementById("user-display-name");
 
 // AUTOMATISCHE PRÜFUNG: Ist der Nutzer eingeloggt?
 onAuthStateChanged(auth, (user) => {
@@ -31,6 +32,9 @@ onAuthStateChanged(auth, (user) => {
         loginView.classList.add("hidden");
         dashboardView.classList.remove("hidden");
         messageText.innerText = "";
+        
+        // Zeigt die E-Mail des Benutzers im Header an
+        userDisplayName.innerText = user.email;
     } else {
         loginView.classList.remove("hidden");
         dashboardView.classList.add("hidden");
