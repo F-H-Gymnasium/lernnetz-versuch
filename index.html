@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LernNetz - Login</title>
+    <title>LernNetz - Die digitale Schulcloud</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -34,13 +34,83 @@
     </div>
 
     <div id="dashboard-view" class="dashboard-wrapper hidden">
-        <header class="main-header">
-            <h2>Willkommen im LernNetz!</h2>
-            <button id="logoutBtn" class="btn-danger">Ausloggen</button>
+        
+        <header class="lernnets-header">
+            <div class="header-left">
+                <span class="sachsen-logo">sachsen.de</span>
+                <h1 class="logo-text">Lern<span>Netz</span> <small>Die MeSax - Schulcloud</small></h1>
+            </div>
+            <div class="header-right">
+                <span id="user-display-name" class="user-name">Finn Dany Roitsch</span>
+                <button id="logoutBtn" class="logout-icon-btn" title="Ausloggen">➡️</button>
+            </div>
         </header>
-        <main>
-            <p>Erfolgreich angemeldet. Hier entstehen bald deine Module!</p>
-        </main>
+
+        <div class="dashboard-layout">
+            
+            <main class="main-content">
+                <div class="content-header">
+                    <h2>🏠 Start</h2>
+                    <div class="tabs">
+                        <span class="tab active">Status</span>
+                        <span class="tab">Pinnwand</span>
+                    </div>
+                </div>
+
+                <section class="info-overview">
+                    <div class="info-row"><strong>E-Mail</strong> <span>0 ungelesene E-Mail(s)</span></div>
+                    <div class="info-row"><strong>Messenger</strong> <span>7 Mitglied(er) online</span></div>
+                    <div class="info-row"><strong>Kalender</strong> <span>Sommerferien (04.07.2026 - 14.08.2026)</span></div>
+                </section>
+
+                <h3>Klassen</h3>
+                <hr class="section-divider">
+                
+                <div class="classes-grid">
+                    <div class="class-card">
+                        <div class="class-card-image placeholder-blue">👥👥</div>
+                        <div class="class-card-body">
+                            <h4>5a (26/4)</h4>
+                            <p>Herr Jolicraft</p>
+                        </div>
+                    </div>
+                    <div class="class-card">
+                        <div class="class-card-image placeholder-blue">👥👥</div>
+                        <div class="class-card-body">
+                            <h4>5b Deutsch (26/4)</h4>
+                            <p>Herr Jolicraft</p>
+                        </div>
+                    </div>
+                    <div class="class-card">
+                        <div class="class-card-image placeholder-tiger">🐯</div>
+                        <div class="class-card-body">
+                            <h4>6f2 Geographie (26/4)</h4>
+                            <p>Herr Jolicraft</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="sidebar-tools">
+                <h3>Werkzeuge</h3>
+                <div class="tools-header-box">👤💻💡</div>
+                
+                <ul class="tool-list">
+                    <li class="tool-item active">🏠 Start</li>
+                    
+                    <li class="category-title">Kommunizieren</li>
+                    <li class="tool-item">✉️ E-Mail</li>
+                    <li class="tool-item">👥 Adressbuch</li>
+                    <li class="tool-item">💬 Messenger</li>
+                    
+                    <li class="category-title">Organisieren</li>
+                    <li class="tool-item">📁 Dateien</li>
+                    <li class="tool-item">📅 Kalender</li>
+                    <li class="tool-item">✔️ Aufgaben</li>
+                </ul>
+            </aside>
+
+        </div>
     </div>
 
     <script type="module" src="script.js"></script>
