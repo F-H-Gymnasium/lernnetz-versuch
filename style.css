@@ -1,0 +1,137 @@
+/* Globale Stile */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: #f4f6f9;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Versteckt Elemente (wie das Dashboard am Anfang) */
+.hidden {
+    display: none !important;
+}
+
+/* Login-Zentrierung */
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+}
+
+.login-card {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 420px;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header h1 {
+    font-size: 2.2rem;
+    color: #1e3a8a; /* Dunkelblau */
+}
+
+.login-header h1 span {
+    color: #3b82f6; /* Hellblau */
+    font-weight: 400;
+}
+
+.login-header p {
+    color: #6b7280;
+    font-size: 0.95rem;
+    margin-top: 5px;
+}
+
+/* Formular-Elemente */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 100%;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+/* Buttons */
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-primary {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2563eb;
+}
+
+.btn-secondary {
+    background-color: #e5e7eb;
+    color: #4b5563;
+}
+
+.btn-secondary:hover {
+    background-color: #d1d5db;
+}
+
+.btn-danger {
+    background-color: #ef4444;
+    color: white;
+}
+
+/* Nachrichten (Fehler/Erfolg) */
+.message-box {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #ef4444; /* Standardmäßig rot für Fehler */
+}
