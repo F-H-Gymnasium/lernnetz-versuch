@@ -15,12 +15,12 @@ body {
     min-height: 100vh;
 }
 
-/* Versteckt Elemente (wie das Dashboard am Anfang) */
+/* Versteckt Elemente */
 .hidden {
     display: none !important;
 }
 
-/* Login-Zentrierung */
+/* --- LOGIN STYLING --- */
 .login-wrapper {
     display: flex;
     justify-content: center;
@@ -45,11 +45,11 @@ body {
 
 .login-header h1 {
     font-size: 2.2rem;
-    color: #1e3a8a; /* Dunkelblau */
+    color: #1e3a8a;
 }
 
 .login-header h1 span {
-    color: #3b82f6; /* Hellblau */
+    color: #3b82f6;
     font-weight: 400;
 }
 
@@ -59,7 +59,6 @@ body {
     margin-top: 5px;
 }
 
-/* Formular-Elemente */
 .form-group {
     margin-bottom: 20px;
 }
@@ -78,7 +77,6 @@ body {
     border: 1px solid #d1d5db;
     border-radius: 6px;
     font-size: 100%;
-    transition: border-color 0.2s;
 }
 
 .form-group input:focus {
@@ -86,11 +84,7 @@ body {
     border-color: #3b82f6;
 }
 
-/* Buttons */
 .button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
     margin-top: 25px;
 }
 
@@ -102,7 +96,6 @@ button {
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
 }
 
 .btn-primary {
@@ -114,24 +107,143 @@ button {
     background-color: #2563eb;
 }
 
-.btn-secondary {
-    background-color: #e5e7eb;
-    color: #4b5563;
-}
-
-.btn-secondary:hover {
-    background-color: #d1d5db;
-}
-
 .btn-danger {
     background-color: #ef4444;
     color: white;
 }
 
-/* Nachrichten (Fehler/Erfolg) */
 .message-box {
     margin-top: 15px;
     text-align: center;
     font-size: 0.9rem;
-    color: #ef4444; /* Standardmäßig rot für Fehler */
+    color: #ef4444;
 }
+
+
+/* --- LERNNETZ DASHBOARD STYLING --- */
+.dashboard-wrapper {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.lernnets-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 3px solid #ccc;
+    background: #fff;
+}
+
+.sachsen-logo {
+    font-weight: bold;
+    color: #333;
+    margin-right: 20px;
+    border-right: 2px solid #ccc;
+    padding-right: 20px;
+}
+
+.logo-text {
+    display: inline-block;
+    font-size: 1.5rem;
+    color: #1e3a8a;
+}
+
+.logo-text span { color: #3b82f6; }
+.logo-text small { font-size: 0.8rem; color: #666; font-weight: normal; }
+
+.header-right { display: flex; align-items: center; gap: 10px; }
+.user-name { font-weight: bold; color: #1e40af; }
+
+.logout-icon-btn { 
+    width: auto; 
+    padding: 5px 10px; 
+    background: none; 
+    color: #333; 
+    border: 1px solid #ccc; 
+    border-radius: 4px;
+}
+.logout-icon-btn:hover { background: #f0f0f0; }
+
+.dashboard-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Linker Hauptinhalt */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.content-header h2 { color: #b91c1c; margin-bottom: 10px; }
+.tabs { border-bottom: 2px solid #3b82f6; padding-bottom: 5px; margin-bottom: 20px; }
+.tab { padding: 5px 15px; cursor: pointer; color: #3b82f6; }
+.tab.active { background: #3b82f6; color: white; border-radius: 4px 4px 0 0; font-weight: bold; }
+
+/* Info Zeilen */
+.info-overview { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; margin-bottom: 30px; }
+.info-row { padding: 8px 0; border-bottom: 1px solid #e2e8f0; display: flex; gap: 50px; font-size: 0.95rem; }
+.info-row strong { width: 100px; color: #475569; }
+
+.section-divider {
+    border: 0;
+    height: 1px;
+    background: #cbd5e1;
+    margin-bottom: 15px;
+}
+
+/* Klassen Grid */
+.classes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.class-card {
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.class-card-image {
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+}
+.placeholder-blue { background-color: #dbeafe; color: #1e40af; }
+.placeholder-tiger { background-color: #fef3c7; }
+
+.class-card-body { padding: 10px; }
+.class-card-body h4 { color: #1e40af; font-size: 0.95rem; margin-bottom: 4px; }
+.class-card-body p { color: #64748b; font-size: 0.85rem; }
+
+/* RECHTE SIDEBAR (WERKZEUGE) */
+.sidebar-tools {
+    width: 260px;
+    border-left: 2px solid #cbd5e1;
+    background: #f8fafc;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.sidebar-tools h3 { color: #1e40af; font-size: 1.1rem; margin-bottom: 10px; }
+.tools-header-box { background: #dbeafe; text-align: center; padding: 15px; font-size: 1.8rem; border-radius: 4px; margin-bottom: 15px; }
+
+.tool-list { list-style: none; }
+.category-title { font-weight: bold; color: #475569; font-size: 0.85rem; margin: 15px 0 5px 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; }
+.tool-item { padding: 6px 10px; cursor: pointer; border-radius: 4px; font-size: 0.95rem; color: #334155; }
+.tool-item:hover { background: #e2e8f0; }
+.tool-item.active { background: #dbeafe; color: #1e40af; font-weight: bold; border-left: 4px solid #1e40af; }
