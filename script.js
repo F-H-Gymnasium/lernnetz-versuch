@@ -25,6 +25,7 @@ const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const messageText = document.getElementById("message");
 const userDisplayName = document.getElementById("user-display-name");
+const userPath = document.getElementById("user-path");
 
 // AUTOMATISCHE PRÜFUNG: Ist der Nutzer eingeloggt?
 onAuthStateChanged(auth, (user) => {
@@ -33,8 +34,9 @@ onAuthStateChanged(auth, (user) => {
         dashboardView.classList.remove("hidden");
         messageText.innerText = "";
         
-        // Zeigt die E-Mail des Benutzers im Header an
+        // Aktualisiert den Namen/E-Mail oben rechts und im Pfad links
         userDisplayName.innerText = user.email;
+        userPath.innerText = user.email + " | LernNetz Gymnasium";
     } else {
         loginView.classList.remove("hidden");
         dashboardView.classList.add("hidden");
@@ -43,21 +45,12 @@ onAuthStateChanged(auth, (user) => {
 
 // FUNKTION: Einloggen
 loginBtn.addEventListener("click", () => {
-    console.log("Button wurde geklickt!"); 
-    
     const email = emailInput.value;
     const password = passwordInput.value;
-    
-    console.log("Versuche Login für:", email); 
 
     signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            console.log("Erfolgreich eingeloggt!", userCredential.user);
-        })
         .catch((error) => {
-            console.error("Firebase Fehler:", error); 
             messageText.style.color = "red";
-            
             if (error.code === "auth/invalid-credential") {
                 messageText.innerText = "E-Mail oder Passwort falsch.";
             } else {
