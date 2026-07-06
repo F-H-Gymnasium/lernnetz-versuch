@@ -77,53 +77,59 @@ onAuthStateChanged(auth, async (user) => {
             }
         } catch (e) { console.error(e); }
 
-        // WARTUNGSMODUS-CHECK: Wenn aktiv und User kein Admin ist -> Direkt wieder ausloggen!
+        // WARTUNGSMODUS-CHECK
         if (config.maintenanceMode && userRole !== "admin") {
-            messageText.innerText = "🚨 Die Plattform befindet sich aktuell in planmäßigen Wartungsarbeiten. Login gesperrt.";
-            messageText.style.color = "orange";
+            if (messageText) {
+                messageText.innerText = "🚨 Die Plattform befindet sich aktuell in planmäßigen Wartungsarbeiten. Login gesperrt.";
+                messageText.style.color = "orange";
+            }
             signOut(auth);
             return;
         }
 
         // GUI für eingeloggte User freischalten
-        loginView.classList.add("hidden");
-        dashboardView.classList.remove("hidden");
-        userDisplayName.innerText = user.email;
+        if (loginView) loginView.classList.add("hidden");
+        if (dashboardView) dashboardView.classList.remove("hidden");
+        if (userDisplayName) userDisplayName.innerText = user.email;
 
         // Rollenspezifischer Pfadtext & Menü-Freischaltung
         if (userRole === "admin") {
-            userPath.innerText = `${user.email} | [Administrator] | ${globalSchoolName}`;
-            adminMenuTitle.classList.remove("hidden");
-            menuSettings.classList.remove("hidden");
+            if (userPath) userPath.innerText = `${user.email} | [Administrator] | ${globalSchoolName}`;
+            if (adminMenuTitle) adminMenuTitle.classList.remove("hidden");
+            if (menuSettings) menuSettings.classList.remove("hidden");
             
-            // Vorbefüllung der Administrationsfelder
-            settingsSchoolName.value = globalSchoolName;
-            settingsMaintenance.checked = config.maintenanceMode || false;
+            // Vorbefüllung der Administrationsfelder (falls vorhanden)
+            if (settingsSchoolName) settingsSchoolName.value = globalSchoolName;
+            if (settingsMaintenance) settingsMaintenance.checked = config.maintenanceMode || false;
         } else if (userRole === "teacher") {
-            userPath.innerText = `${user.email} | [Lehrer] | ${globalSchoolName}`;
+            if (userPath) userPath.innerText = `${user.email} | [Lehrer] | ${globalSchoolName}`;
         } else {
-            userPath.innerText = `${user.email} | [Schüler] | ${globalSchoolName}`;
+            if (userPath) userPath.innerText = `${user.email} | [Schüler] | ${globalSchoolName}`;
         }
 
     } else {
-        loginView.classList.remove("hidden");
-        dashboardView.classList.add("hidden");
+        if (loginView) loginView.classList.remove("hidden");
+        if (dashboardView) dashboardView.classList.add("hidden");
     }
 });
 
 // LOGIN EVENT
-loginBtn.addEventListener("click", () => {
-    messageText.innerText = "";
-    signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value)
-        .catch((error) => {
-            messageText.style.color = "red";
-            if (error.code === "auth/invalid-credential") {
-                messageText.innerText = "E-Mail oder Passwort falsch.";
-            } else {
-                messageText.innerText = "Fehler: " + error.message;
-            }
-        });
-});
+if (loginBtn) {
+    loginBtn.addEventListener("click", () => {
+        if (messageText) messageText.innerText = "";
+        signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value)
+            .catch((error) => {
+                if (messageText) {
+                    messageText.style.color = "red";
+                    if (error.code === "auth/invalid-credential") {
+                        messageText.innerText = "E-Mail oder Passwort falsch.";
+                    } else {
+                        messageText.innerText = "Fehler: " + error.message;
+                    }
+                }
+            });
+    });
+}
 
 // LOGOUT EVENT
 if (logoutBtn) {
@@ -132,57 +138,69 @@ if (logoutBtn) {
     });
 }
 
-// PANE/VIEW WECHSEL LOGIK (Klick auf Menüpunkte)
-menuStart.addEventListener("click", () => {
-    menuSettings.classList.remove("active");
-    menuStart.classList.add("active");
-    viewSettings.classList.add("hidden");
-    viewStart.classList.remove("hidden");
-});
+// PANE/VIEW WECHSEL LOGIK (Sicherheitsabfragen eingebaut)
+if (menuStart) {
+    menuStart.addEventListener("click", () => {
+        if (menuSettings) menuSettings.classList.remove("active");
+        menuStart.classList.add("active");
+        if (viewSettings) viewSettings.classList.add("hidden");
+        if (viewStart) viewStart.classList.remove("hidden");
+    });
+}
 
-menuSettings.addEventListener("click", () => {
-    menuStart.classList.remove("active");
-    menuSettings.classList.add("active");
-    viewStart.classList.add("hidden");
-    viewSettings.classList.remove("hidden");
-});
+if (menuSettings) {
+    menuSettings.addEventListener("click", () => {
+        if (menuStart) menuStart.classList.remove("active");
+        menuSettings.classList.add("active");
+        if (viewStart) viewStart.classList.add("hidden");
+        if (viewSettings) viewSettings.classList.remove("hidden");
+    });
+}
 
-// DROPDOWN "RAUM WECHSELN" ÖFFNEN / SCHLIESSEN (Bild 4)
-roomBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    roomDropdown.classList.toggle("hidden");
-});
+// DROPDOWN "RAUM WECHSELN" ÖFFNEN / SCHLIESSEN
+if (roomBtn) {
+    roomBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (roomDropdown) roomDropdown.classList.toggle("hidden");
+    });
+}
 
-// Schließt das Menü, wenn man irgendwo anders hinklickt
 document.addEventListener("click", () => {
-    roomDropdown.classList.add("hidden");
+    if (roomDropdown) roomDropdown.classList.add("hidden");
 });
 
-// KLICK AUF SCHULE IM DROPDOWN (Wechselt zur Raum-Ansicht)
-schoolSelectBtn.addEventListener("click", () => {
-    roomDropdown.classList.add("hidden");
-    menuSettings.classList.remove("active");
-    menuStart.classList.add("active");
-    viewSettings.classList.add("hidden");
-    viewStart.classList.remove("hidden");
-});
+// KLICK AUF SCHULE IM DROPDOWN
+if (schoolSelectBtn) {
+    schoolSelectBtn.addEventListener("click", () => {
+        if (roomDropdown) roomDropdown.classList.add("hidden");
+        if (menuSettings) menuSettings.classList.remove("active");
+        if (menuStart) menuStart.classList.add("active");
+        if (viewSettings) viewSettings.classList.add("hidden");
+        if (viewStart) viewStart.classList.remove("hidden");
+    });
+}
 
-// ADMIN EVENT: Einstellungen in Firestore speichern
-saveSettingsBtn.addEventListener("click", async () => {
-    settingsMessage.innerText = "";
-    try {
-        await setDoc(doc(db, "config", "global"), {
-            schoolName: settingsSchoolName.value,
-            maintenanceMode: settingsMaintenance.checked
-        }, { merge: true });
-        
-        settingsMessage.style.color = "green";
-        settingsMessage.innerText = "✓ Einstellungen erfolgreich übernommen und gespeichert!";
-        
-        // Aktualisiere Werte direkt ohne Neuladen
-        await loadSchoolConfig();
-    } catch (e) {
-        settingsMessage.style.color = "red";
-        settingsMessage.innerText = "Fehler beim Speichern: " + e.message;
-    }
-});
+// ADMIN EVENT: Einstellungen speichern
+if (saveSettingsBtn) {
+    saveSettingsBtn.addEventListener("click", async () => {
+        if (settingsMessage) settingsMessage.innerText = "";
+        try {
+            await setDoc(doc(db, "config", "global"), {
+                schoolName: settingsSchoolName ? settingsSchoolName.value : "LernNetz Schule",
+                maintenanceMode: settingsMaintenance ? settingsMaintenance.checked : false
+            }, { merge: true });
+            
+            if (settingsMessage) {
+                settingsMessage.style.color = "green";
+                settingsMessage.innerText = "✓ Einstellungen erfolgreich übernommen und gespeichert!";
+            }
+            
+            await loadSchoolConfig();
+        } catch (e) {
+            if (settingsMessage) {
+                settingsMessage.style.color = "red";
+                settingsMessage.innerText = "Fehler beim Speichern: " + e.message;
+            }
+        }
+    });
+}
