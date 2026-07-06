@@ -39,19 +39,19 @@ onAuthStateChanged(auth, (user) => {
 
 // FUNKTION: Einloggen
 loginBtn.addEventListener("click", () => {
-    console.log("Button wurde geklickt!"); // Test 1: Reagiert der Button?
+    console.log("Button wurde geklickt!"); 
     
     const email = emailInput.value;
     const password = passwordInput.value;
     
-    console.log("Versuche Login für:", email); // Test 2: Werden die Daten ausgelesen?
+    console.log("Versuche Login für:", email); 
 
     signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             console.log("Erfolgreich eingeloggt!", userCredential.user);
         })
         .catch((error) => {
-            console.error("Firebase Fehler:", error); // Zeigt den echten Fehler in F12 an
+            console.error("Firebase Fehler:", error); 
             messageText.style.color = "red";
             
             if (error.code === "auth/invalid-credential") {
