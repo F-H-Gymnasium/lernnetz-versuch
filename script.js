@@ -35,7 +35,6 @@ const viewStart = document.getElementById("view-start");
 const viewSettings = document.getElementById("view-settings");
 const menuStart = document.getElementById("menu-start");
 const menuSettings = document.getElementById("menu-settings");
-const adminMenuTitle = document.getElementById("admin-menu-title");
 
 // Einstellungs-Formular Elemente
 const settingsSchoolName = document.getElementById("settings-schoolname");
@@ -45,7 +44,7 @@ const settingsMessage = document.getElementById("settings-message");
 
 let globalSchoolName = "LernNetz Schule";
 
-// Funktion zum Laden der globalen Schul-Konfiguration (Name & Wartung)
+// Funktion zum Laden der globalen Schul-Konfiguration
 async function loadSchoolConfig() {
     try {
         const configDoc = await getDoc(doc(db, "config", "global"));
@@ -53,7 +52,7 @@ async function loadSchoolConfig() {
             const data = configDoc.data();
             globalSchoolName = data.schoolName || "LernNetz Schule";
             
-            // Setze alle Namensanzeigen im HTML auf den geladenen Wert um
+            // Setzt den geänderten Schulnamen überall im HTML gleichzeitig ein
             document.querySelectorAll(".current-school-name").forEach(el => el.innerText = globalSchoolName);
             return data;
         }
@@ -68,7 +67,6 @@ onAuthStateChanged(auth, async (user) => {
     if (user) {
         const config = await loadSchoolConfig();
         
-        // Erst Rolle des Nutzers ermitteln
         let userRole = "student";
         try {
             const userDoc = await getDoc(doc(db, "users", user.email.toLowerCase()));
@@ -87,24 +85,22 @@ onAuthStateChanged(auth, async (user) => {
             return;
         }
 
-        // GUI für eingeloggte User freischalten
         if (loginView) loginView.classList.add("hidden");
         if (dashboardView) dashboardView.classList.remove("hidden");
         if (userDisplayName) userDisplayName.innerText = user.email;
 
-        // Rollenspezifischer Pfadtext & Menü-Freischaltung
+        // Rollensteuerung fürs Menü
         if (userRole === "admin") {
             if (userPath) userPath.innerText = `${user.email} | [Administrator] | ${globalSchoolName}`;
-            if (adminMenuTitle) adminMenuTitle.classList.remove("hidden");
             if (menuSettings) menuSettings.classList.remove("hidden");
-            
-            // Vorbefüllung der Administrationsfelder (falls vorhanden)
             if (settingsSchoolName) settingsSchoolName.value = globalSchoolName;
             if (settingsMaintenance) settingsMaintenance.checked = config.maintenanceMode || false;
         } else if (userRole === "teacher") {
             if (userPath) userPath.innerText = `${user.email} | [Lehrer] | ${globalSchoolName}`;
+            if (menuSettings) menuSettings.classList.add("hidden");
         } else {
             if (userPath) userPath.innerText = `${user.email} | [Schüler] | ${globalSchoolName}`;
+            if (menuSettings) menuSettings.classList.add("hidden");
         }
 
     } else {
@@ -138,16 +134,17 @@ if (logoutBtn) {
     });
 }
 
-// PANE/VIEW WECHSEL LOGIK (Sicherheitsabfragen eingebaut)
+// SEITENWECHSEL: Klick auf Startseite
 if (menuStart) {
     menuStart.addEventListener("click", () => {
         if (menuSettings) menuSettings.classList.remove("active");
-        menuStart.classList.add("active");
+        menuStart.add("active");
         if (viewSettings) viewSettings.classList.add("hidden");
         if (viewStart) viewStart.classList.remove("hidden");
     });
 }
 
+// SEITENWECHSEL: Klick auf Grundeinstellungen
 if (menuSettings) {
     menuSettings.addEventListener("click", () => {
         if (menuStart) menuStart.classList.remove("active");
@@ -169,18 +166,18 @@ document.addEventListener("click", () => {
     if (roomDropdown) roomDropdown.classList.add("hidden");
 });
 
-// KLICK AUF SCHULE IM DROPDOWN
+// KLICK AUF DIE SCHULE IM OVERLAY (Wechselt direkt zur Schulansicht/Klassenliste)
 if (schoolSelectBtn) {
     schoolSelectBtn.addEventListener("click", () => {
         if (roomDropdown) roomDropdown.classList.add("hidden");
         if (menuSettings) menuSettings.classList.remove("active");
         if (menuStart) menuStart.classList.add("active");
         if (viewSettings) viewSettings.classList.add("hidden");
-        if (viewStart) viewStart.classList.remove("hidden");
+        if (viewStart) viewStart.classList.remove("hidden"); // Aktiviert die Klassenansicht
     });
 }
 
-// ADMIN EVENT: Einstellungen speichern
+// ADMIN EVENT: Grundeinstellungen speichern
 if (saveSettingsBtn) {
     saveSettingsBtn.addEventListener("click", async () => {
         if (settingsMessage) settingsMessage.innerText = "";
@@ -192,7 +189,7 @@ if (saveSettingsBtn) {
             
             if (settingsMessage) {
                 settingsMessage.style.color = "green";
-                settingsMessage.innerText = "✓ Einstellungen erfolgreich übernommen und gespeichert!";
+                settingsMessage.innerText = "✓ Einstellungen erfolgreich live gespeichert!";
             }
             
             await loadSchoolConfig();
