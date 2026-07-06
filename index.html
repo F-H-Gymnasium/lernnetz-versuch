@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LernNetz - Die digitale Schulcloud</title>
+    <title>LernNetz - Die MeSax - Schulcloud</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -36,15 +36,37 @@
     <div id="dashboard-view" class="dashboard-wrapper hidden">
         
         <header class="lernnets-header">
-            <div class="header-left">
-                <span class="sachsen-logo">sachsen.de</span>
-                <h1 class="logo-text">Lern<span>Netz</span> <small>Die MeSax - Schulcloud</small></h1>
+            <div class="header-top-line">
+                <div class="header-left">
+                    <span class="sachsen-logo">sachsen.de</span>
+                </div>
+                <div class="header-right">
+                    <span id="user-display-name" class="user-name">Finn Dany Roitsch</span>
+                    <span class="header-links">Suche 🔍 | Menü ☰</span>
+                </div>
             </div>
-            <div class="header-right">
-                <span id="user-display-name" class="user-name">Finn Dany Roitsch</span>
-                <button id="logoutBtn" class="logout-icon-btn" title="Ausloggen">➡️</button>
+            
+            <div class="header-main-line">
+                <div class="logo-area">
+                    <span class="cloud-icon">💻</span>
+                    <h1 class="logo-text">Lern<span>Netz</span> <small>Die MeSax - Schulcloud</small></h1>
+                </div>
             </div>
         </header>
+
+        <nav class="blue-navbar">
+            <div class="nav-left">
+                <span class="room-selector">▼ Raum wechseln</span>
+            </div>
+            <div class="nav-right">
+                <span class="nav-icons">🖨️ 📑 ✉️ ✏️ 📖 📥 ⚙️ ❓</span>
+            </div>
+        </nav>
+
+        <div class="sub-info-bar">
+            <span id="user-path">Finn Dany Roitsch | Christian-Weise-Gymnasium Zittau</span>
+            <button id="logoutBtn" class="logout-link">Ausloggen [-></button>
+        </div>
 
         <div class="dashboard-layout">
             
@@ -57,43 +79,64 @@
                     </div>
                 </div>
 
-                <section class="info-overview">
-                    <div class="info-row"><strong>E-Mail</strong> <span>0 ungelesene E-Mail(s)</span></div>
-                    <div class="info-row"><strong>Messenger</strong> <span>7 Mitglied(er) online</span></div>
-                    <div class="info-row"><strong>Kalender</strong> <span>Sommerferien (04.07.2026 - 14.08.2026)</span></div>
-                </section>
+                <table class="info-table">
+                    <tr>
+                        <td class="label-col">E-Mail</td>
+                        <td class="value-col"><a href="#">0 ungelesene E-Mail(s)</a></td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Messenger</td>
+                        <td class="value-col"><a href="#">7 Mitglied(er) online</a></td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Kalender</td>
+                        <td class="value-col">
+                            <div>📅 Sommerferien (04.07.2026 - 14.08.2026)</div>
+                            <div>📅 Herbstferien (12.10.2026 - 24.10.2026)</div>
+                            <div>📅 Buß- und Bettag (18.11.2026)</div>
+                        </td>
+                    </tr>
+                </table>
 
-                <h3>Klassen</h3>
-                <hr class="section-divider">
+                <div class="section-headline">
+                    <h3>Klassen</h3>
+                    <span class="minimize-btn">—</span>
+                </div>
                 
                 <div class="classes-grid">
                     <div class="class-card">
-                        <div class="class-card-image placeholder-blue">👥👥</div>
+                        <div class="class-card-image">👥👥👥</div>
                         <div class="class-card-body">
-                            <h4>5a (26/4)</h4>
-                            <p>Herr Jolicraft</p>
+                            <a href="#">8rt Inf (2025/2026)</a>
+                            <p>Anke Kindermann 👤</p>
                         </div>
                     </div>
                     <div class="class-card">
-                        <div class="class-card-image placeholder-blue">👥👥</div>
+                        <div class="class-card-image">👥👥👥</div>
                         <div class="class-card-body">
-                            <h4>5b Deutsch (26/4)</h4>
-                            <p>Herr Jolicraft</p>
+                            <a href="#">8rt Physik (2025/2026)</a>
+                            <p>Markus Hotho 👤</p>
                         </div>
                     </div>
                     <div class="class-card">
-                        <div class="class-card-image placeholder-tiger">🐯</div>
+                        <div class="class-card-image tiger-bg">🐯</div>
                         <div class="class-card-body">
-                            <h4>6f2 Geographie (26/4)</h4>
-                            <p>Herr Jolicraft</p>
+                            <a href="#">8rt SPO (2025/2026)</a>
+                            <p>Ramona Tschüter 👤</p>
                         </div>
                     </div>
                 </div>
             </main>
 
             <aside class="sidebar-tools">
-                <h3>Werkzeuge</h3>
-                <div class="tools-header-box">👤💻💡</div>
+                <div class="sidebar-headline">
+                    <h3>Werkzeuge</h3>
+                    <span class="settings-gear">🛠️</span>
+                </div>
+                
+                <div class="tools-avatar-box">
+                    <div class="avatar-placeholder">👤💻💡</div>
+                </div>
                 
                 <ul class="tool-list">
                     <li class="tool-item active">🏠 Start</li>
@@ -107,6 +150,13 @@
                     <li class="tool-item">📁 Dateien</li>
                     <li class="tool-item">📅 Kalender</li>
                     <li class="tool-item">✔️ Aufgaben</li>
+                    <li class="tool-item">📑 Lesezeichen</li>
+                    <li class="tool-item">🗓️ Stundenplan</li>
+                    <li class="tool-item">📝 Notizen</li>
+                    
+                    <li class="category-title">Lernen</li>
+                    <li class="tool-item">💻 Lernmodule</li>
+                    <li class="tool-item">📚 Mediensammlung</li>
                 </ul>
             </aside>
 
