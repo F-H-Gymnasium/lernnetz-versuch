@@ -49,7 +49,7 @@
             <div class="header-main-line">
                 <div class="logo-area">
                     <span class="cloud-icon">💻</span>
-                    <h1 class="logo-text">Lern<span>Netz</span> <small>Die MeSax - Schulcloud</small></h1>
+                    <h1 class="logo-text">Lern<span>Netz</span> <small class="current-school-name">LernNetz Schule</small></h1>
                 </div>
             </div>
         </header>
@@ -64,11 +64,11 @@
         </nav>
 
         <div id="room-dropdown" class="room-overlay hidden">
-            <div class="dropdown-header">Finn Dany Roitsch</div>
+            <div class="dropdown-header">Meine Räume</div>
             <div class="dropdown-category">Schulen</div>
             <div id="school-select-btn" class="dropdown-item">🏫 <span class="current-school-name">LernNetz Schule</span></div>
             <div class="dropdown-category">Klassen</div>
-            <div class="dropdown-item-disabled">👥 Keine Räume geladen</div>
+            <div class="dropdown-item-disabled">👥 Keine separaten Klassenräume aktiv</div>
         </div>
 
         <div class="sub-info-bar">
@@ -82,9 +82,9 @@
                 
                 <div id="view-start" class="content-pane">
                     <div class="content-header">
-                        <h2>🏠 Start</h2>
+                        <h2 class="current-school-name">LernNetz Schule</h2>
                         <div class="tabs">
-                            <span class="tab active">Status</span>
+                            <span class="tab active">Übersicht</span>
                             <span class="tab">Pinnwand</span>
                         </div>
                     </div>
@@ -109,7 +109,7 @@
                     </table>
 
                     <div class="section-headline">
-                        <h3>Klassen</h3>
+                        <h3>Klassen und Gruppen</h3>
                         <span class="minimize-btn">—</span>
                     </div>
                     
@@ -147,7 +147,7 @@
 
                 <div id="view-settings" class="content-pane hidden">
                     <div class="content-header">
-                        <h2>⚙️ Grundeinstellungen</h2>
+                        <h2>⚙️ Grundeinstellungen (Administration)</h2>
                     </div>
                     <div class="settings-form-box">
                         <div class="form-group">
@@ -158,7 +158,7 @@
                         <div class="form-group toggle-group">
                             <label for="settings-maintenance">🚨 Wartungsmodus aktivieren:</label>
                             <input type="checkbox" id="settings-maintenance">
-                            <span class="toggle-desc">Wenn aktiv, können sich Schüler und Lehrer nicht mehr einloggen. Nur Admins erhalten Zutritt.</span>
+                            <span class="toggle-desc">Wenn aktiv, können sich Schüler und Lehrer nicht mehr einloggen. Nur Admins erhalten Zugriff.</span>
                         </div>
 
                         <button id="saveSettingsBtn" class="btn-primary" style="width: auto; padding: 10px 20px;">Einstellungen speichern</button>
@@ -195,8 +195,7 @@
                     <li class="tool-item">🗓️ Stundenplan</li>
                     <li class="tool-item">📝 Formulare</li>
                     
-                    <li id="admin-menu-title" class="category-title hidden">Administration</li>
-                    <li id="menu-settings" class="tool-item hidden">⚙️ Grundeinstellungen</li>
+                    <li id="menu-settings" class="tool-item hidden" style="color: #b91c1c; font-weight: bold;">⚙️ Grundeinstellungen</li>
                 </ul>
             </aside>
 
