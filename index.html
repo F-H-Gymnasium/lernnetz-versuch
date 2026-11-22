@@ -85,73 +85,74 @@
                 <!-- ---------- START ---------- -->
                 <div id="view-start" class="content-pane">
                     <div class="content-header">
-                        <h2 class="current-school-name">LernNetz Schule</h2>
-                        <div class="tabs">
-                            <span class="tab active">Übersicht</span>
-                            <span class="tab">Pinnwand</span>
+                        <h2 class="page-title"><span class="title-icon">🏠</span> Start</h2>
+                        <div class="tabs" id="start-tabs">
+                            <span class="tab active" data-tab="status">Status</span>
+                            <span class="tab" data-tab="pinnwand">Pinnwand</span>
                         </div>
                     </div>
 
-                    <table class="info-table">
-                        <tr>
-                            <td class="label-col">E-Mail</td>
-                            <td class="value-col"><a href="#" id="mail-summary-link">0 ungelesene E-Mail(s)</a></td>
-                        </tr>
-                        <tr>
-                            <td class="label-col">Messenger</td>
-                            <td class="value-col"><a href="#">7 Mitglied(er) online</a></td>
-                        </tr>
-                        <tr>
-                            <td class="label-col">Kalender</td>
-                            <td class="value-col">
-                                <div>📅 Sommerferien (04.07.2026 - 14.08.2026)</div>
-                                <div>📅 Herbstferien (12.10.2026 - 24.10.2026)</div>
-                                <div>📅 Buß- und Bettag (18.11.2026)</div>
-                            </td>
-                        </tr>
-                    </table>
+                    <!-- Tab: Status -->
+                    <div id="start-status">
+                        <div class="mail-links no-border">
+                            | <a href="#">Übersicht anpassen</a>
+                            | <a href="#">Navigator</a>
+                        </div>
 
-                    <div class="section-headline">
-                        <h3>Klassen und Gruppen</h3>
-                        <span class="minimize-btn">—</span>
+                        <table class="info-table">
+                            <tr>
+                                <td class="label-col">E-Mail</td>
+                                <td class="value-col"><span class="arrow-icon"></span><a href="#" id="mail-summary-link">0 ungelesene E-Mail(s)</a></td>
+                            </tr>
+                            <tr>
+                                <td class="label-col">Systemnachrichten</td>
+                                <td class="value-col"><span class="arrow-icon"></span><a href="#">5 ungelesene Systemnachricht(en)</a></td>
+                            </tr>
+                            <tr>
+                                <td class="label-col">Messenger</td>
+                                <td class="value-col"><span class="arrow-icon"></span><a href="#">8 Mitglied(er) online</a></td>
+                            </tr>
+                            <tr>
+                                <td class="label-col">Kalender</td>
+                                <td class="value-col">
+                                    <div><span class="arrow-icon"></span><a href="#">Schulfreier Tag</a> (04.12.2026)</div>
+                                    <div><span class="arrow-icon"></span><a href="#">Weihnachtsferien</a> (23.12.2026 - 02.01.2027)</div>
+                                    <div><span class="arrow-icon"></span><a href="#">Geburtstag</a> (05.01.2027)</div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div class="section-headline">
+                            <h3>Klassen</h3>
+                            <span class="minimize-btn" data-target="start-classes" title="Ein-/Ausklappen">—</span>
+                        </div>
+                        <div id="start-classes" class="classes-grid"></div>
+
+                        <div class="section-headline section-spaced">
+                            <h3>Gruppen</h3>
+                            <span class="minimize-btn" data-target="start-groups" title="Ein-/Ausklappen">—</span>
+                        </div>
+                        <div id="start-groups" class="classes-grid"></div>
+
+                        <div class="tabs pinnwand-tabs">
+                            <span class="tab active">Pinnwand</span>
+                        </div>
+                        <div class="mail-links no-border">
+                            | <a href="#">Alle Einträge</a>
+                        </div>
+                        <p class="muted-text">Keine Einträge vorhanden.</p>
                     </div>
 
-                    <div class="classes-grid">
-                        <div class="class-card">
-                            <div class="class-card-image">👥</div>
-                            <div class="class-card-body">
-                                <a href="#">8 Ethik (2025/2026)</a>
-                                <p>Sybille Langer 👤</p>
-                            </div>
-                        </div>
-                        <div class="class-card">
-                            <div class="class-card-image">👥</div>
-                            <div class="class-card-body">
-                                <a href="#">8r Ru (2025/2026)</a>
-                                <p>Britt Kretschmar 👤</p>
-                            </div>
-                        </div>
-                        <div class="class-card">
-                            <div class="class-card-image">🐞</div>
-                            <div class="class-card-body">
-                                <a href="#">8rt (2025/2026)</a>
-                                <p>Heike Knüpfer 👤</p>
-                            </div>
-                        </div>
-                        <div class="class-card">
-                            <div class="class-card-image">🐯</div>
-                            <div class="class-card-body">
-                                <a href="#">8rt SPO (2025/2026)</a>
-                                <p>Ramona Tschüter 👤</p>
-                            </div>
-                        </div>
+                    <!-- Tab: Pinnwand -->
+                    <div id="start-pinnwand" class="hidden">
+                        <div class="placeholder-box">Die Pinnwand ist noch leer.</div>
                     </div>
                 </div>
 
                 <!-- ---------- MAIL (Platzhalter, wird als Nächstes gebaut) ---------- -->
                 <div id="view-mail" class="content-pane hidden">
                     <div class="content-header">
-                        <h2>✉️ E-Mail</h2>
+                        <h2 class="page-title">✉️ E-Mail</h2>
                     </div>
                     <div class="tabs">
                         <span class="tab active">Posteingang</span>
@@ -298,6 +299,14 @@
                     <li class="tool-item" data-view="placeholder" data-title="📑 Lesezeichen">📑 Lesezeichen</li>
                     <li class="tool-item" data-view="placeholder" data-title="🗓️ Stundenplan">🗓️ Stundenplan</li>
                     <li class="tool-item" data-view="placeholder" data-title="📝 Formulare">📝 Formulare</li>
+
+                    <li class="category-title">Lernen</li>
+                    <li class="tool-item" data-view="placeholder" data-title="📚 Lernmodule">📚 Lernmodule</li>
+                    <li class="tool-item" data-view="placeholder" data-title="🖼️ Mediensammlung">🖼️ Mediensammlung</li>
+                    <li class="tool-item" data-view="placeholder" data-title="📓 Lerntagebuch">📓 Lerntagebuch</li>
+                    <li class="tool-item" data-view="placeholder" data-title="📋 Arbeitsstände und Ergebnisse">📋 Arbeitsstände und Ergebnisse</li>
+
+                    <li class="category-title">Präsentieren</li>
 
                     <!-- Nur für Admins sichtbar (wird per JS gesteuert) -->
                     <li id="menu-settings" class="tool-item tool-item-admin hidden" data-view="settings" data-roles="admin">⚙️ Grundeinstellungen</li>
