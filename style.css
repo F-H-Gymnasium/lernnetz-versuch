@@ -54,6 +54,8 @@ body {
     font-weight: bold;
     cursor: pointer;
 }
+.btn-primary:hover { background-color: #004494; }
+.btn-inline { width: auto; padding: 10px 20px; }
 
 .message-box { color: red; margin-top: 10px; text-align: center; font-size: 0.9rem; }
 
@@ -111,23 +113,25 @@ body {
     align-items: center;
     font-size: 0.9rem;
     font-weight: bold;
-    position: relative;
 }
 
-.room-selector { cursor: pointer; padding: 4px 8px; border-radius: 4px; user-select: none; }
+.nav-left { position: relative; }
+.room-selector { cursor: pointer; padding: 4px 8px; border-radius: 4px; user-select: none; display: inline-block; }
 .room-selector:hover { background-color: rgba(255, 255, 255, 0.2); }
 .nav-icons { letter-spacing: 5px; cursor: pointer; }
 
-/* Raum wechseln Overlay Menu */
+/* Raum wechseln Overlay Menu (hängt direkt unter dem Button) */
 .room-overlay {
     position: absolute;
-    top: 115px;
-    left: 40px;
+    top: 100%;
+    left: 0;
+    margin-top: 8px;
     background: #ffffff;
     border: 1px solid #999;
     box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
     width: 320px;
     z-index: 1000;
+    color: #333;
 }
 .dropdown-header { background: #e8f0fe; padding: 8px; font-weight: bold; border-bottom: 1px solid #ccc; font-size: 0.9rem; color: #003366; }
 .dropdown-category { background: #f1f3f4; padding: 4px 8px; font-size: 0.8rem; color: #666; font-weight: bold; }
@@ -150,7 +154,7 @@ body {
 
 /* Spaltenaufteilung */
 .dashboard-layout { display: flex; padding: 20px 40px; gap: 40px; }
-.main-content { flex: 1; }
+.main-content { flex: 1; min-width: 0; }
 
 .content-header h2 { color: #b91c1c; font-size: 1.8rem; margin-bottom: 15px; }
 .tabs { border-bottom: 1px solid #1a73e8; margin-bottom: 20px; }
@@ -176,7 +180,7 @@ body {
 .class-card-body p { font-size: 0.8rem; color: #555; margin-top: 4px; }
 
 /* RECHTE SIDEBAR */
-.sidebar-tools { width: 240px; }
+.sidebar-tools { width: 240px; flex-shrink: 0; }
 .sidebar-headline { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1a73e8; padding-bottom: 5px; color: #1a73e8; margin-bottom: 15px; }
 .tools-avatar-box { background-color: #f2f2f2; border: 1px solid #ccc; padding: 20px; text-align: center; margin-bottom: 15px; }
 .avatar-placeholder { font-size: 2rem; opacity: 0.4; }
@@ -185,9 +189,29 @@ body {
 .tool-item { padding: 6px 5px; font-size: 0.85rem; color: #1a73e8; cursor: pointer; border-bottom: 1px solid #f3f4f6; }
 .tool-item:hover { background-color: #f3f4f6; text-decoration: underline; }
 .tool-item.active { background-color: #e8f0fe; color: #003366; font-weight: bold; border: 1px solid #1a73e8; }
+.tool-item-admin { color: #b91c1c; font-weight: bold; margin-top: 15px; }
 
-/* Grundeinstellungen Formular */
-.settings-form-box { background: #fafafa; border: 1px solid #ccc; padding: 20px; border-radius: 6px; max-width: 600px; }
+/* Platzhalter-Bereiche */
+.placeholder-box { background: #fafafa; border: 1px dashed #b4c6e7; padding: 30px; text-align: center; color: #666; border-radius: 6px; }
+
+/* Grundeinstellungen Formulare */
+.settings-form-box { background: #fafafa; border: 1px solid #ccc; padding: 20px; border-radius: 6px; max-width: 700px; margin-bottom: 20px; }
+.box-title { color: #003366; font-size: 1.1rem; margin-bottom: 12px; }
 .toggle-group { display: flex; flex-direction: column; gap: 4px; }
 .toggle-group input[type="checkbox"] { width: 24px; height: 24px; cursor: pointer; margin-top: 5px; }
 .toggle-desc { font-size: 0.8rem; color: #ef4444; font-style: italic; }
+.status-text { margin-top: 10px; font-weight: bold; font-size: 0.9rem; }
+.hint { font-size: 0.85rem; color: #666; margin-bottom: 12px; line-height: 1.4; }
+
+/* Benutzer & Rollen */
+.role-form { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.role-form input[type="email"] { flex: 1; min-width: 200px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+.role-form select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; background: #fff; }
+
+.users-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
+.users-table th { text-align: left; background: #e8f0fe; color: #003366; padding: 8px; border-bottom: 1px solid #b4c6e7; }
+.users-table td { padding: 8px; border-bottom: 1px solid #e5e7eb; }
+.users-table .muted { color: #999; font-style: italic; }
+
+.btn-small { background: #fff; border: 1px solid #b91c1c; color: #b91c1c; border-radius: 4px; padding: 4px 10px; cursor: pointer; font-size: 0.8rem; }
+.btn-small:hover { background: #b91c1c; color: #fff; }
