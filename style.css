@@ -273,3 +273,59 @@ body {
 .mail-text.empty { color: #555; }
 
 .role-form input[type="text"] { flex: 1; min-width: 160px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+
+/* =========================================================
+   STARTSEITE (nach Lernsax-Vorlage)
+   ========================================================= */
+.content-header h2.page-title { color: #0b5aa2; font-size: 1.9rem; margin: 10px 0 25px; }
+.title-icon { color: #c8102e; margin-right: 6px; }
+
+/* Tabs: grau unterstrichen, aktiver Tab hellblau */
+.tabs { border-bottom: 1px solid #555; margin-bottom: 0; }
+.tab { padding: 9px 14px; font-size: 0.95rem; }
+.tab.active { background-color: #e1ebfa; color: #0b3d7a; border: none; border-radius: 0; top: 0; font-weight: bold; }
+
+.mail-links.no-border { border-bottom: none; padding: 14px 0 10px; }
+
+/* Übersichtstabelle */
+.info-table { margin-top: 5px; }
+.info-table td { padding: 11px 0; }
+.label-col { width: 170px; padding-left: 14px; }
+.value-col div { margin-bottom: 2px; }
+
+.arrow-icon { display: inline-block; width: 14px; height: 14px; background: #1a73e8; border-radius: 2px; margin-right: 10px; position: relative; vertical-align: -2px; }
+.arrow-icon::after { content: ""; position: absolute; left: 4px; top: 3px; border-style: solid; border-width: 4px 0 4px 5px; border-color: transparent transparent transparent #fff; }
+
+/* Abschnitts-Überschriften */
+.section-headline { border-bottom: 4px solid #e3ecf8; padding-bottom: 6px; margin-bottom: 12px; }
+.section-headline h3 { color: #0b5aa2; font-size: 1.5rem; }
+.section-spaced { margin-top: 35px; }
+.minimize-btn { font-weight: bold; font-size: 1.2rem; user-select: none; }
+
+/* Karten */
+.classes-grid { gap: 10px; }
+.class-card { border: 1px solid #b4c6e7; }
+.class-card-image { height: 70px; background-color: #eaf1fb; }
+.class-card-body { border-top: none; padding: 8px 10px 10px; }
+.class-card-body a { font-size: 1rem; }
+.class-card-body p { font-size: 0.95rem; color: #222; margin-top: 6px; }
+
+.class-card-image.people {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 190 60'%3E%3Cg fill='%23a9bfdc'%3E%3Ccircle cx='27' cy='25' r='10'/%3E%3Cpath d='M8 58a19 16 0 0 1 38 0z'/%3E%3Ccircle cx='68' cy='15' r='11'/%3E%3Cpath d='M47 52a21 17 0 0 1 42 0z'/%3E%3Ccircle cx='115' cy='20' r='10'/%3E%3Cpath d='M95 56a20 16 0 0 1 40 0z'/%3E%3Ccircle cx='160' cy='14' r='10'/%3E%3Cpath d='M140 52a20 16 0 0 1 40 0z'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto 85%;
+}
+.class-card-image.board { background: linear-gradient(135deg, #0f3d2e, #1f5f46); color: #eee; font-style: italic; font-size: 1.1rem; }
+.class-card-image.board::after { content: "a² + b² = c²"; }
+.class-card-image.notes { background: linear-gradient(90deg, #f3a6bd 0 20%, #8fd0ef 20% 40%, #ffe27a 40% 60%, #b9e28d 60% 80%, #f3a6bd 80% 100%); }
+.class-card-image.cork { background: radial-gradient(circle at 25% 40%, #fff 0 14%, transparent 15%), radial-gradient(circle at 50% 60%, #8fd0ef 0 14%, transparent 15%), radial-gradient(circle at 75% 35%, #ffe27a 0 14%, transparent 15%), #c4975a; }
+
+.contact-icon { display: inline-block; width: 14px; height: 14px; border-radius: 2px; vertical-align: -2px; margin-left: 2px;
+    background: radial-gradient(circle at 50% 36%, #fff 0 20%, transparent 22%), radial-gradient(ellipse at 50% 105%, #fff 0 40%, transparent 42%), #1a73e8; }
+
+.pinnwand-tabs { margin-top: 35px; }
+.muted-text { color: #888; font-style: italic; font-size: 0.9rem; padding: 6px 0; }
+
+/* Seitenleiste: Trennlinien zwischen Kategorien */
+.category-title { border-top: 1px solid #cbd5e1; padding-top: 12px; margin-top: 12px; }
