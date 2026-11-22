@@ -73,6 +73,88 @@ const roleMessage = $("role-message");
 const usersTbody = $("users-tbody");
 
 /* =========================================================
+   STARTSEITE: Klassen & Gruppen
+   (vorerst feste Beispieldaten, später aus Firestore)
+   look: "people" | "board" | "notes" | "cork"
+   ========================================================= */
+const START_CLASSES = [
+    { name: "9rt (2026/2027)",           teacher: "Simone Günzel",          look: "people" },
+    { name: "9rt Englisch (2026/2027)",  teacher: "Anna Maria Matthausch",  look: "people" },
+    { name: "9rt Geografie (2026/2027)", teacher: "Maria-Luisa Gohlke",     look: "people" },
+    { name: "9rt Inf (2026/2027)",       teacher: "Mirko Hans",             look: "people" },
+    { name: "9rt Ma (2026/2027)",        teacher: "Heike Knüpfer",          look: "board" },
+    { name: "9rt Physik (2026/2027)",    teacher: "Markus Hotho",           look: "people" },
+    { name: "9rt Russisch",              teacher: "Britt Kretschmar",       look: "notes" },
+    { name: "BO & SO 8-9 S",             teacher: "Ramona Tschüter",        look: "cork" },
+    { name: "CWG AG",                    teacher: "Wojciech Wiercinski",    look: "people" },
+    { name: "GTA 2026_27",               teacher: "Wojciech Wiercinski",    look: "people" }
+];
+
+const START_GROUPS = [
+    { name: "KKJS_26", teacher: "Christian Pätzold", look: "people" }
+];
+
+function renderCards(containerId, items) {
+    const box = $(containerId);
+    if (!box) return;
+    box.innerHTML = "";
+
+    items.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "class-card";
+
+        const img = document.createElement("div");
+        img.className = "class-card-image " + (item.look || "people");
+
+        const body = document.createElement("div");
+        body.className = "class-card-body";
+
+        const link = document.createElement("a");
+        link.href = "#";
+        link.innerText = item.name;
+        link.addEventListener("click", (e) => e.preventDefault());
+
+        const p = document.createElement("p");
+        p.append(document.createTextNode(item.teacher + " "));
+        const icon = document.createElement("span");
+        icon.className = "contact-icon";
+        p.appendChild(icon);
+
+        body.append(link, p);
+        card.append(img, body);
+        box.appendChild(card);
+    });
+}
+
+function initStartPage() {
+    renderCards("start-classes", START_CLASSES);
+    renderCards("start-groups", START_GROUPS);
+
+    // Tabs "Status" / "Pinnwand"
+    const tabs = document.querySelectorAll("#start-tabs .tab");
+    tabs.forEach(tab => tab.addEventListener("click", () => {
+        tabs.forEach(t => t.classList.toggle("active", t === tab));
+        $("start-status").classList.toggle("hidden", tab.dataset.tab !== "status");
+        $("start-pinnwand").classList.toggle("hidden", tab.dataset.tab !== "pinnwand");
+    }));
+
+    // Abschnitte ein-/ausklappen
+    document.querySelectorAll(".minimize-btn[data-target]").forEach(btn => btn.addEventListener("click", () => {
+        const target = $(btn.dataset.target);
+        const hide = !target.classList.contains("hidden");
+        target.classList.toggle("hidden", hide);
+        btn.innerText = hide ? "+" : "—";
+    }));
+
+    // Platzhalter-Links auf der Startseite springen nicht nach oben
+    document.querySelectorAll("#view-start a[href='#']").forEach(a =>
+        a.addEventListener("click", (e) => e.preventDefault())
+    );
+}
+
+initStartPage();
+
+/* =========================================================
    HILFSFUNKTIONEN
    ========================================================= */
 function setStatus(el, text, color) {
