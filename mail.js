@@ -133,7 +133,11 @@ async function loadDirectory() {
 }
 
 // Text wie "max@schule.de; Anna Müller; lehrer1" -> { emails, errors }
-function resolveField(text) {
+export function getDirectory() {
+    return directory;
+}
+
+export function resolveField(text) {
     const emails = [];
     const errors = [];
     const tokens = text.split(/[;,\n]/).map(t => t.trim()).filter(Boolean);
