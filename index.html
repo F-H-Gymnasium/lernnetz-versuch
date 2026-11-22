@@ -153,8 +153,51 @@
                     <div class="content-header">
                         <h2>✉️ E-Mail</h2>
                     </div>
-                    <div class="placeholder-box">
-                        Der MailService wird als Nächstes gebaut.
+                    <div class="tabs">
+                        <span class="tab active">Posteingang</span>
+                    </div>
+
+                    <div class="mail-links">
+                        | <a href="#" id="mail-link-new">E-Mail schreiben</a>
+                        | <a href="#" id="mail-link-search">Suche</a>
+                        | <a href="#" id="mail-link-refresh">Aktualisieren</a>
+                    </div>
+
+                    <div id="mail-search-bar" class="mail-search-bar hidden">
+                        <input type="text" id="mail-search" placeholder="Betreff, Absender oder Text durchsuchen...">
+                    </div>
+
+                    <div class="mail-folder-bar">
+                        <label for="mail-folder">Angezeigter Ordner</label>
+                        <select id="mail-folder">
+                            <option value="inbox">Posteingang</option>
+                            <option value="sent">Gesendet</option>
+                            <option value="draft">Entwürfe</option>
+                        </select>
+                        <select id="mail-filter">
+                            <option value="all">Alle E-Mails</option>
+                            <option value="unread">Ungelesene E-Mails</option>
+                        </select>
+                        <span id="mail-count" class="mail-count"></span>
+                    </div>
+
+                    <table class="mail-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="mail-select-all"> Alle</th>
+                                <th>Funktion</th>
+                                <th></th>
+                                <th>Betreff</th>
+                                <th id="mail-party-th">Absender</th>
+                                <th>Größe</th>
+                                <th>Datum</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mail-tbody"></tbody>
+                    </table>
+
+                    <div class="mail-actions">
+                        <button id="mail-delete-selected" class="btn-small">🗑️ Ausgewählte löschen</button>
                     </div>
                 </div>
 
@@ -201,6 +244,7 @@
 
                         <div class="role-form">
                             <input type="email" id="role-email" placeholder="name@schule.de">
+                            <input type="text" id="role-name" placeholder="Name (optional)">
                             <select id="role-select">
                                 <option value="student">Schüler</option>
                                 <option value="teacher">Lehrer</option>
@@ -214,12 +258,13 @@
                             <thead>
                                 <tr>
                                     <th>E-Mail</th>
+                                    <th>Name</th>
                                     <th>Rolle</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody id="users-tbody">
-                                <tr><td colspan="3" class="muted">Lädt...</td></tr>
+                                <tr><td colspan="4" class="muted">Lädt...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -259,6 +304,85 @@
                 </ul>
             </aside>
 
+        </div>
+    </div>
+
+    <!-- ===================== MAIL-FENSTER ===================== -->
+    <div id="mail-modal-backdrop" class="mail-backdrop hidden">
+
+        <!-- E-Mail schreiben -->
+        <div id="mail-compose" class="mail-modal hidden">
+            <div class="mail-modal-header">
+                <span>E-Mail schreiben</span>
+                <button class="mail-close" data-close title="Schließen">✕</button>
+            </div>
+            <div class="mail-modal-body">
+                <table class="mail-meta">
+                    <tr><th>Absender</th><td id="c-from"></td></tr>
+                    <tr><th>Datum</th><td id="c-date"></td></tr>
+                </table>
+
+                <label class="mail-label" for="c-to">An</label>
+                <div class="addr-row">
+                    <input type="text" id="c-to" autocomplete="off">
+                    <button class="addr-btn" data-target="c-to" title="Adressbuch">📇</button>
+                </div>
+
+                <label class="mail-label" for="c-cc">Kopie an <small>(Cc)</small></label>
+                <div class="addr-row">
+                    <input type="text" id="c-cc" autocomplete="off">
+                    <button class="addr-btn" data-target="c-cc" title="Adressbuch">📇</button>
+                </div>
+
+                <label class="mail-label" for="c-bcc">Blindkopie an <small>(Bcc)</small></label>
+                <div class="addr-row">
+                    <input type="text" id="c-bcc" autocomplete="off">
+                    <button class="addr-btn" data-target="c-bcc" title="Adressbuch">📇</button>
+                </div>
+
+                <label class="mail-label" for="c-subject">Betreff</label>
+                <input type="text" id="c-subject" autocomplete="off">
+
+                <label class="mail-label" for="c-body">Text</label>
+                <textarea id="c-body" rows="10"></textarea>
+
+                <p class="hint">Sie können E-Mails an alle Nutzer Ihrer Institution verschicken. Mehrere Empfänger mit Semikolon trennen. Möglich sind Benutzername (E-Mail-Adresse) oder Name.</p>
+                <p id="c-error" class="status-text"></p>
+
+                <div id="addr-picker" class="addr-picker hidden">
+                    <input type="text" id="addr-filter" placeholder="Name oder Adresse suchen...">
+                    <div id="addr-list" class="addr-list"></div>
+                </div>
+            </div>
+            <div class="mail-modal-footer">
+                <button id="c-send" class="btn-mail">E-Mail senden</button>
+                <button id="c-draft" class="btn-mail">Als Entwurf speichern</button>
+            </div>
+        </div>
+
+        <!-- E-Mail lesen -->
+        <div id="mail-read" class="mail-modal mail-modal-wide hidden">
+            <div class="mail-modal-header">
+                <span>E-Mail lesen</span>
+                <button class="mail-close" data-close title="Schließen">✕</button>
+            </div>
+            <div class="mail-modal-body">
+                <table class="mail-meta">
+                    <tr><th>Absender</th><td id="r-from"></td></tr>
+                    <tr><th>Datum</th><td id="r-date"></td></tr>
+                    <tr><th>An</th><td id="r-to"></td></tr>
+                    <tr id="r-cc-row" class="hidden"><th>Kopie (Cc)</th><td id="r-cc"></td></tr>
+                    <tr id="r-bcc-row" class="hidden"><th>Blindkopie (Bcc)</th><td id="r-bcc"></td></tr>
+                    <tr><th>Betreff</th><td id="r-subject"></td></tr>
+                </table>
+                <div id="r-body" class="mail-text"></div>
+            </div>
+            <div class="mail-modal-footer">
+                <button id="r-reply" class="btn-mail">↩ Antworten</button>
+                <button id="r-forward" class="btn-mail">↪ Weiterleiten</button>
+                <button id="r-edit" class="btn-mail">✎ Bearbeiten</button>
+                <button id="r-delete" class="btn-mail">🗑 Löschen</button>
+            </div>
         </div>
     </div>
 
