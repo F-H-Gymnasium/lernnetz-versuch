@@ -329,3 +329,8 @@ body {
 
 /* Seitenleiste: Trennlinien zwischen Kategorien */
 .category-title { border-top: 1px solid #cbd5e1; padding-top: 12px; margin-top: 12px; }
+
+/* Klasse / Gruppe erstellen */
+.create-link { margin-top: 14px; font-size: 0.9rem; }
+.create-link a { color: #1a73e8; text-decoration: none; }
+.create-link a:hover { text-decoration: underline; }
