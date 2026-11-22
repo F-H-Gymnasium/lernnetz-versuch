@@ -127,12 +127,14 @@
                             <span class="minimize-btn" data-target="start-classes" title="Ein-/Ausklappen">—</span>
                         </div>
                         <div id="start-classes" class="classes-grid"></div>
+                        <div class="create-link"><span class="arrow-icon"></span><a href="#" id="new-class-link">Neue Klasse erstellen</a></div>
 
                         <div class="section-headline section-spaced">
                             <h3>Gruppen</h3>
                             <span class="minimize-btn" data-target="start-groups" title="Ein-/Ausklappen">—</span>
                         </div>
                         <div id="start-groups" class="classes-grid"></div>
+                        <div class="create-link"><span class="arrow-icon"></span><a href="#" id="new-group-link">Neue Gruppe erstellen</a></div>
 
                         <div class="tabs pinnwand-tabs">
                             <span class="tab active">Pinnwand</span>
@@ -391,6 +393,38 @@
                 <button id="r-forward" class="btn-mail">↪ Weiterleiten</button>
                 <button id="r-edit" class="btn-mail">✎ Bearbeiten</button>
                 <button id="r-delete" class="btn-mail">🗑 Löschen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== KLASSE / GRUPPE ERSTELLEN ===================== -->
+    <div id="group-modal-backdrop" class="mail-backdrop hidden">
+        <div class="mail-modal">
+            <div class="mail-modal-header">
+                <span id="group-modal-title">Neue Klasse erstellen</span>
+                <button class="mail-close" id="g-close" title="Schließen">✕</button>
+            </div>
+            <div class="mail-modal-body">
+                <label class="mail-label" for="g-name" id="g-name-label">Wie soll die Klasse heißen?</label>
+                <input type="text" id="g-name" autocomplete="off" maxlength="60">
+
+                <label class="mail-label" for="g-members">Welche Mitglieder sollen hinein?</label>
+                <div class="addr-row">
+                    <input type="text" id="g-members" autocomplete="off">
+                    <button class="addr-btn" id="g-addr-btn" title="Adressbuch">📇</button>
+                </div>
+
+                <p class="hint">Du bist automatisch Besitzer und Mitglied. Weitere Mitglieder mit Benutzername (E-Mail-Adresse) oder Name angeben, mehrere mit Semikolon trennen.</p>
+                <p id="g-error" class="status-text"></p>
+
+                <div id="g-picker" class="addr-picker hidden" style="top: 150px;">
+                    <input type="text" id="g-addr-filter" placeholder="Name oder Adresse suchen...">
+                    <div id="g-addr-list" class="addr-list"></div>
+                </div>
+            </div>
+            <div class="mail-modal-footer">
+                <button id="g-create" class="btn-mail">Erstellen</button>
+                <button id="g-cancel" class="btn-mail">Abbrechen</button>
             </div>
         </div>
     </div>
