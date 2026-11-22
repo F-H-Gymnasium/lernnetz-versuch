@@ -1,7 +1,10 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
+/* =========================================================
+   FIREBASE
+   ========================================================= */
 const firebaseConfig = {
     apiKey: "AIzaSyBJDxfrc0YamrkoTlSY8H8TTzjBVvGNYXg",
     authDomain: "lernnetz-3e076.firebaseapp.com",
@@ -16,188 +19,340 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// DOM Elemente holen
-const loginView = document.getElementById("login-view");
-const dashboardView = document.getElementById("dashboard-view");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const messageText = document.getElementById("message");
-const userDisplayName = document.getElementById("user-display-name");
-const userPath = document.getElementById("user-path");
+/* =========================================================
+   KONSTANTEN & ZUSTAND
+   ========================================================= */
+const DEFAULT_SCHOOL_NAME = "LernNetz Schule";
 
-// Raum Wechseln & Menu Navigation
-const roomBtn = document.getElementById("roomBtn");
-const roomDropdown = document.getElementById("room-dropdown");
-const schoolSelectBtn = document.getElementById("school-select-btn");
-const viewStart = document.getElementById("view-start");
-const viewSettings = document.getElementById("view-settings");
-const menuStart = document.getElementById("menu-start");
-const menuSettings = document.getElementById("menu-settings");
+// Alle Rollen, die es gibt (Schlüssel = Wert in Firestore)
+const ROLES = {
+    admin: "Administrator",
+    teacher: "Lehrer",
+    student: "Schüler"
+};
 
-// Einstellungs-Formular Elemente
-const settingsSchoolName = document.getElementById("settings-schoolname");
-const settingsMaintenance = document.getElementById("settings-maintenance");
-const saveSettingsBtn = document.getElementById("saveSettingsBtn");
-const settingsMessage = document.getElementById("settings-message");
+let currentUser = null;
+let currentRole = "student";
+let globalSchoolName = DEFAULT_SCHOOL_NAME;
 
-let globalSchoolName = "LernNetz Schule";
+/* =========================================================
+   DOM
+   ========================================================= */
+const $ = (id) => document.getElementById(id);
 
-// Funktion zum Laden der globalen Schul-Konfiguration
-async function loadSchoolConfig() {
-    try {
-        const configDoc = await getDoc(doc(db, "config", "global"));
-        if (configDoc.exists()) {
-            const data = configDoc.data();
-            globalSchoolName = data.schoolName || "LernNetz Schule";
-            
-            // Setzt den geänderten Schulnamen überall im HTML gleichzeitig ein
-            document.querySelectorAll(".current-school-name").forEach(el => el.innerText = globalSchoolName);
-            return data;
-        }
-    } catch (e) {
-        console.error("Fehler beim Laden der Konfiguration:", e);
-    }
-    return { schoolName: "LernNetz Schule", maintenanceMode: false };
+const loginView = $("login-view");
+const dashboardView = $("dashboard-view");
+const emailInput = $("email");
+const passwordInput = $("password");
+const loginBtn = $("loginBtn");
+const logoutBtn = $("logoutBtn");
+const messageText = $("message");
+const userDisplayName = $("user-display-name");
+const userPath = $("user-path");
+
+const roomBtn = $("roomBtn");
+const roomDropdown = $("room-dropdown");
+const schoolSelectBtn = $("school-select-btn");
+const toolList = $("tool-list");
+const placeholderTitle = $("placeholder-title");
+
+const settingsSchoolName = $("settings-schoolname");
+const settingsMaintenance = $("settings-maintenance");
+const saveSettingsBtn = $("saveSettingsBtn");
+const settingsMessage = $("settings-message");
+
+const roleEmail = $("role-email");
+const roleSelect = $("role-select");
+const saveRoleBtn = $("saveRoleBtn");
+const roleMessage = $("role-message");
+const usersTbody = $("users-tbody");
+
+/* =========================================================
+   HILFSFUNKTIONEN
+   ========================================================= */
+function setStatus(el, text, color) {
+    if (!el) return;
+    el.innerText = text;
+    el.style.color = color || "";
 }
 
-// Prüft Authentifizierung & Berechtigung live
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        const config = await loadSchoolConfig();
-        
-        let userRole = "student";
-        try {
-            const userDoc = await getDoc(doc(db, "users", user.email.toLowerCase()));
-            if (userDoc.exists()) {
-                userRole = userDoc.data().role || "student";
-            }
-        } catch (e) { console.error(e); }
+// Schulname überall im HTML einsetzen
+function applySchoolName(name) {
+    globalSchoolName = name || DEFAULT_SCHOOL_NAME;
+    document.querySelectorAll(".current-school-name").forEach(el => el.innerText = globalSchoolName);
+}
 
-        // WARTUNGSMODUS-CHECK
-        if (config.maintenanceMode && userRole !== "admin") {
-            if (messageText) {
-                messageText.innerText = "🚨 Die Plattform befindet sich aktuell in planmäßigen Wartungsarbeiten. Login gesperrt.";
-                messageText.style.color = "orange";
+// Globale Konfiguration laden (config/global)
+async function loadSchoolConfig() {
+    try {
+        const snap = await getDoc(doc(db, "config", "global"));
+        if (snap.exists()) {
+            const data = snap.data();
+            applySchoolName(data.schoolName);
+            return { schoolName: globalSchoolName, maintenanceMode: !!data.maintenanceMode };
+        }
+    } catch (e) {
+        console.error("Konfiguration konnte nicht geladen werden (Firestore-Regeln prüfen):", e);
+    }
+    applySchoolName(DEFAULT_SCHOOL_NAME);
+    return { schoolName: DEFAULT_SCHOOL_NAME, maintenanceMode: false };
+}
+
+// Rolle des Benutzers aus users/<email> laden
+async function loadUserRole(email) {
+    try {
+        const snap = await getDoc(doc(db, "users", email.toLowerCase()));
+        if (snap.exists()) {
+            const role = snap.data().role;
+            if (ROLES[role]) return { role, assigned: true };
+            console.warn(`Unbekannte Rolle "${role}" für ${email} – fällt auf Schüler zurück.`);
+        } else {
+            console.warn(`Kein users-Dokument für ${email} – gilt als Schüler.`);
+        }
+    } catch (e) {
+        console.error("Rolle konnte nicht geladen werden (Firestore-Regeln prüfen):", e);
+    }
+    return { role: "student", assigned: false };
+}
+
+/* =========================================================
+   ROLLEN-UI & VIEWS
+   ========================================================= */
+// Elemente mit data-roles="admin,teacher" nur für diese Rollen zeigen
+function applyRoleUI(role) {
+    document.querySelectorAll("[data-roles]").forEach(el => {
+        const allowed = el.dataset.roles.split(",").map(r => r.trim());
+        el.classList.toggle("hidden", !allowed.includes(role));
+    });
+}
+
+function canUse(item) {
+    if (!item.dataset.roles) return true;
+    return item.dataset.roles.split(",").map(r => r.trim()).includes(currentRole);
+}
+
+function showView(viewName, item) {
+    if (item && !canUse(item)) return;
+
+    document.querySelectorAll(".content-pane").forEach(p => p.classList.add("hidden"));
+    const pane = $("view-" + viewName);
+    if (pane) pane.classList.remove("hidden");
+
+    document.querySelectorAll(".tool-item").forEach(t => t.classList.remove("active"));
+    const target = item || toolList.querySelector(`[data-view="${viewName}"]`);
+    if (target) target.classList.add("active");
+
+    if (viewName === "placeholder" && item && placeholderTitle) {
+        placeholderTitle.innerText = item.dataset.title || item.innerText;
+    }
+    if (viewName === "settings") loadUsers();
+}
+
+/* =========================================================
+   LOGIN / LOGOUT / AUTH-STATUS
+   ========================================================= */
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        currentUser = null;
+        currentRole = "student";
+        loginView.classList.remove("hidden");
+        dashboardView.classList.add("hidden");
+        return;
+    }
+
+    const config = await loadSchoolConfig();
+    const { role, assigned } = await loadUserRole(user.email);
+
+    // Wartungsmodus: nur Admins dürfen rein
+    if (config.maintenanceMode && role !== "admin") {
+        setStatus(messageText, "🚨 Die Plattform befindet sich aktuell in planmäßigen Wartungsarbeiten. Login gesperrt.", "orange");
+        signOut(auth);
+        return;
+    }
+
+    currentUser = user;
+    currentRole = role;
+
+    loginView.classList.add("hidden");
+    dashboardView.classList.remove("hidden");
+
+    userDisplayName.innerText = user.email;
+    const hint = assigned ? "" : " (keine Rolle zugewiesen)";
+    userPath.innerText = `${user.email} | [${ROLES[role]}]${hint} | ${globalSchoolName}`;
+
+    applyRoleUI(role);
+
+    if (role === "admin") {
+        settingsSchoolName.value = globalSchoolName;
+        settingsMaintenance.checked = config.maintenanceMode;
+    }
+
+    showView("start");
+});
+
+loginBtn.addEventListener("click", () => {
+    setStatus(messageText, "", "");
+    signInWithEmailAndPassword(auth, emailInput.value.trim(), passwordInput.value)
+        .catch((error) => {
+            if (error.code === "auth/invalid-credential") {
+                setStatus(messageText, "E-Mail oder Passwort falsch.", "red");
+            } else {
+                setStatus(messageText, "Fehler: " + error.message, "red");
             }
-            signOut(auth);
+        });
+});
+
+// Enter-Taste löst Login aus
+[emailInput, passwordInput].forEach(el =>
+    el.addEventListener("keydown", (e) => { if (e.key === "Enter") loginBtn.click(); })
+);
+
+logoutBtn.addEventListener("click", () => signOut(auth));
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+// Klick auf ein Werkzeug in der Seitenleiste
+toolList.addEventListener("click", (e) => {
+    const item = e.target.closest(".tool-item");
+    if (!item || !item.dataset.view) return;
+    showView(item.dataset.view, item);
+});
+
+// "0 ungelesene E-Mails" auf der Startseite öffnet den Mail-Bereich
+$("mail-summary-link").addEventListener("click", (e) => {
+    e.preventDefault();
+    showView("mail");
+});
+
+// Raum-Dropdown
+roomBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    roomDropdown.classList.toggle("hidden");
+});
+document.addEventListener("click", () => roomDropdown.classList.add("hidden"));
+
+schoolSelectBtn.addEventListener("click", () => {
+    roomDropdown.classList.add("hidden");
+    showView("start");
+});
+
+/* =========================================================
+   ADMIN: GRUNDEINSTELLUNGEN
+   ========================================================= */
+saveSettingsBtn.addEventListener("click", async () => {
+    setStatus(settingsMessage, "", "");
+    if (currentRole !== "admin") return;
+
+    try {
+        await setDoc(doc(db, "config", "global"), {
+            schoolName: settingsSchoolName.value.trim() || DEFAULT_SCHOOL_NAME,
+            maintenanceMode: settingsMaintenance.checked
+        }, { merge: true });
+
+        await loadSchoolConfig();
+        setStatus(settingsMessage, "✓ Einstellungen erfolgreich gespeichert!", "green");
+    } catch (e) {
+        setStatus(settingsMessage, "Fehler beim Speichern: " + e.message, "red");
+    }
+});
+
+/* =========================================================
+   ADMIN: BENUTZER & ROLLEN
+   ========================================================= */
+async function loadUsers() {
+    if (currentRole !== "admin") return;
+    usersTbody.innerHTML = "";
+
+    try {
+        const snap = await getDocs(collection(db, "users"));
+        if (snap.empty) {
+            const tr = document.createElement("tr");
+            const td = document.createElement("td");
+            td.colSpan = 3;
+            td.className = "muted";
+            td.innerText = "Noch keine Benutzer mit Rolle eingetragen.";
+            tr.appendChild(td);
+            usersTbody.appendChild(tr);
             return;
         }
 
-        if (loginView) loginView.classList.add("hidden");
-        if (dashboardView) dashboardView.classList.remove("hidden");
-        if (userDisplayName) userDisplayName.innerText = user.email;
+        const rows = [];
+        snap.forEach(d => rows.push({ email: d.id, role: d.data().role }));
+        rows.sort((a, b) => a.email.localeCompare(b.email));
 
-        // Rollensteuerung fürs Menü
-        if (userRole === "admin") {
-            if (userPath) userPath.innerText = `${user.email} | [Administrator] | ${globalSchoolName}`;
-            if (menuSettings) menuSettings.classList.remove("hidden");
-            if (settingsSchoolName) settingsSchoolName.value = globalSchoolName;
-            if (settingsMaintenance) settingsMaintenance.checked = config.maintenanceMode || false;
-        } else if (userRole === "teacher") {
-            if (userPath) userPath.innerText = `${user.email} | [Lehrer] | ${globalSchoolName}`;
-            if (menuSettings) menuSettings.classList.add("hidden");
-        } else {
-            if (userPath) userPath.innerText = `${user.email} | [Schüler] | ${globalSchoolName}`;
-            if (menuSettings) menuSettings.classList.add("hidden");
-        }
+        rows.forEach(({ email, role }) => {
+            const tr = document.createElement("tr");
 
-    } else {
-        if (loginView) loginView.classList.remove("hidden");
-        if (dashboardView) dashboardView.classList.add("hidden");
+            const tdMail = document.createElement("td");
+            tdMail.innerText = email;
+
+            const tdRole = document.createElement("td");
+            tdRole.innerText = ROLES[role] || `Unbekannt (${role})`;
+
+            const tdAction = document.createElement("td");
+            const delBtn = document.createElement("button");
+            delBtn.className = "btn-small";
+            delBtn.innerText = "Entfernen";
+            delBtn.addEventListener("click", () => removeRole(email));
+            tdAction.appendChild(delBtn);
+
+            tr.append(tdMail, tdRole, tdAction);
+            usersTbody.appendChild(tr);
+        });
+    } catch (e) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 3;
+        td.style.color = "red";
+        td.innerText = "Fehler beim Laden: " + e.message;
+        tr.appendChild(td);
+        usersTbody.appendChild(tr);
+    }
+}
+
+saveRoleBtn.addEventListener("click", async () => {
+    setStatus(roleMessage, "", "");
+    if (currentRole !== "admin") return;
+
+    const email = roleEmail.value.trim().toLowerCase();
+    const role = roleSelect.value;
+
+    if (!email || !email.includes("@")) {
+        setStatus(roleMessage, "Bitte eine gültige E-Mail-Adresse eingeben.", "red");
+        return;
+    }
+    if (!ROLES[role]) {
+        setStatus(roleMessage, "Ungültige Rolle.", "red");
+        return;
+    }
+    // Schutz: sich nicht versehentlich selbst degradieren
+    if (email === currentUser.email.toLowerCase() && role !== "admin") {
+        if (!confirm("Du entziehst dir selbst die Admin-Rechte. Wirklich fortfahren?")) return;
+    }
+
+    try {
+        await setDoc(doc(db, "users", email), { role }, { merge: true });
+        setStatus(roleMessage, `✓ ${email} ist jetzt: ${ROLES[role]}`, "green");
+        roleEmail.value = "";
+        loadUsers();
+    } catch (e) {
+        setStatus(roleMessage, "Fehler beim Speichern: " + e.message, "red");
     }
 });
 
-// LOGIN EVENT
-if (loginBtn) {
-    loginBtn.addEventListener("click", () => {
-        if (messageText) messageText.innerText = "";
-        signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value)
-            .catch((error) => {
-                if (messageText) {
-                    messageText.style.color = "red";
-                    if (error.code === "auth/invalid-credential") {
-                        messageText.innerText = "E-Mail oder Passwort falsch.";
-                    } else {
-                        messageText.innerText = "Fehler: " + error.message;
-                    }
-                }
-            });
-    });
-}
+async function removeRole(email) {
+    if (email === currentUser.email.toLowerCase()) {
+        setStatus(roleMessage, "Du kannst deinen eigenen Eintrag nicht entfernen.", "red");
+        return;
+    }
+    if (!confirm(`Rolle von ${email} entfernen? Die Person gilt danach wieder als Schüler.`)) return;
 
-// LOGOUT EVENT
-if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-        signOut(auth);
-    });
-}
-
-// SEITENWECHSEL: Klick auf Startseite
-if (menuStart) {
-    menuStart.addEventListener("click", () => {
-        if (menuSettings) menuSettings.classList.remove("active");
-        menuStart.add("active");
-        if (viewSettings) viewSettings.classList.add("hidden");
-        if (viewStart) viewStart.classList.remove("hidden");
-    });
-}
-
-// SEITENWECHSEL: Klick auf Grundeinstellungen
-if (menuSettings) {
-    menuSettings.addEventListener("click", () => {
-        if (menuStart) menuStart.classList.remove("active");
-        menuSettings.classList.add("active");
-        if (viewStart) viewStart.classList.add("hidden");
-        if (viewSettings) viewSettings.classList.remove("hidden");
-    });
-}
-
-// DROPDOWN "RAUM WECHSELN" ÖFFNEN / SCHLIESSEN
-if (roomBtn) {
-    roomBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (roomDropdown) roomDropdown.classList.toggle("hidden");
-    });
-}
-
-document.addEventListener("click", () => {
-    if (roomDropdown) roomDropdown.classList.add("hidden");
-});
-
-// KLICK AUF DIE SCHULE IM OVERLAY (Wechselt direkt zur Schulansicht/Klassenliste)
-if (schoolSelectBtn) {
-    schoolSelectBtn.addEventListener("click", () => {
-        if (roomDropdown) roomDropdown.classList.add("hidden");
-        if (menuSettings) menuSettings.classList.remove("active");
-        if (menuStart) menuStart.classList.add("active");
-        if (viewSettings) viewSettings.classList.add("hidden");
-        if (viewStart) viewStart.classList.remove("hidden"); // Aktiviert die Klassenansicht
-    });
-}
-
-// ADMIN EVENT: Grundeinstellungen speichern
-if (saveSettingsBtn) {
-    saveSettingsBtn.addEventListener("click", async () => {
-        if (settingsMessage) settingsMessage.innerText = "";
-        try {
-            await setDoc(doc(db, "config", "global"), {
-                schoolName: settingsSchoolName ? settingsSchoolName.value : "LernNetz Schule",
-                maintenanceMode: settingsMaintenance ? settingsMaintenance.checked : false
-            }, { merge: true });
-            
-            if (settingsMessage) {
-                settingsMessage.style.color = "green";
-                settingsMessage.innerText = "✓ Einstellungen erfolgreich live gespeichert!";
-            }
-            
-            await loadSchoolConfig();
-        } catch (e) {
-            if (settingsMessage) {
-                settingsMessage.style.color = "red";
-                settingsMessage.innerText = "Fehler beim Speichern: " + e.message;
-            }
-        }
-    });
+    try {
+        await deleteDoc(doc(db, "users", email));
+        setStatus(roleMessage, `✓ Rolle von ${email} entfernt.`, "green");
+        loadUsers();
+    } catch (e) {
+        setStatus(roleMessage, "Fehler beim Entfernen: " + e.message, "red");
+    }
 }
