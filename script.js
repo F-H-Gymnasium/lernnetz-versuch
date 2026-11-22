@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+import { initMail, startMail, stopMail, showMailView } from "./mail.js";
 
 /* =========================================================
    FIREBASE
@@ -35,6 +36,9 @@ let currentUser = null;
 let currentRole = "student";
 let globalSchoolName = DEFAULT_SCHOOL_NAME;
 
+// MailService initialisieren (nutzt immer den aktuell eingeloggten Nutzer)
+initMail(db, () => currentUser);
+
 /* =========================================================
    DOM
    ========================================================= */
@@ -62,6 +66,7 @@ const saveSettingsBtn = $("saveSettingsBtn");
 const settingsMessage = $("settings-message");
 
 const roleEmail = $("role-email");
+const roleName = $("role-name");
 const roleSelect = $("role-select");
 const saveRoleBtn = $("saveRoleBtn");
 const roleMessage = $("role-message");
@@ -146,6 +151,7 @@ function showView(viewName, item) {
         placeholderTitle.innerText = item.dataset.title || item.innerText;
     }
     if (viewName === "settings") loadUsers();
+    if (viewName === "mail") showMailView();
 }
 
 /* =========================================================
@@ -155,6 +161,7 @@ onAuthStateChanged(auth, async (user) => {
     if (!user) {
         currentUser = null;
         currentRole = "student";
+        stopMail();
         loginView.classList.remove("hidden");
         dashboardView.classList.add("hidden");
         return;
@@ -181,6 +188,7 @@ onAuthStateChanged(auth, async (user) => {
     userPath.innerText = `${user.email} | [${ROLES[role]}]${hint} | ${globalSchoolName}`;
 
     applyRoleUI(role);
+    startMail();
 
     if (role === "admin") {
         settingsSchoolName.value = globalSchoolName;
@@ -269,7 +277,7 @@ async function loadUsers() {
         if (snap.empty) {
             const tr = document.createElement("tr");
             const td = document.createElement("td");
-            td.colSpan = 3;
+            td.colSpan = 4;
             td.className = "muted";
             td.innerText = "Noch keine Benutzer mit Rolle eingetragen.";
             tr.appendChild(td);
@@ -278,14 +286,17 @@ async function loadUsers() {
         }
 
         const rows = [];
-        snap.forEach(d => rows.push({ email: d.id, role: d.data().role }));
+        snap.forEach(d => rows.push({ email: d.id, role: d.data().role, name: d.data().name || "" }));
         rows.sort((a, b) => a.email.localeCompare(b.email));
 
-        rows.forEach(({ email, role }) => {
+        rows.forEach(({ email, role, name }) => {
             const tr = document.createElement("tr");
 
             const tdMail = document.createElement("td");
             tdMail.innerText = email;
+
+            const tdName = document.createElement("td");
+            tdName.innerText = name;
 
             const tdRole = document.createElement("td");
             tdRole.innerText = ROLES[role] || `Unbekannt (${role})`;
@@ -297,13 +308,13 @@ async function loadUsers() {
             delBtn.addEventListener("click", () => removeRole(email));
             tdAction.appendChild(delBtn);
 
-            tr.append(tdMail, tdRole, tdAction);
+            tr.append(tdMail, tdName, tdRole, tdAction);
             usersTbody.appendChild(tr);
         });
     } catch (e) {
         const tr = document.createElement("tr");
         const td = document.createElement("td");
-        td.colSpan = 3;
+        td.colSpan = 4;
         td.style.color = "red";
         td.innerText = "Fehler beim Laden: " + e.message;
         tr.appendChild(td);
@@ -332,9 +343,13 @@ saveRoleBtn.addEventListener("click", async () => {
     }
 
     try {
-        await setDoc(doc(db, "users", email), { role }, { merge: true });
+        const userData = { role };
+        const name = roleName.value.trim();
+        if (name) userData.name = name;
+        await setDoc(doc(db, "users", email), userData, { merge: true });
         setStatus(roleMessage, `✓ ${email} ist jetzt: ${ROLES[role]}`, "green");
         roleEmail.value = "";
+        roleName.value = "";
         loadUsers();
     } catch (e) {
         setStatus(roleMessage, "Fehler beim Speichern: " + e.message, "red");
